@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model StripeEvent {
+  id        String   @id
+  createdAt DateTime @default(now())
+}
+
+enum Plan {
+  FREE
+  PRO
+}
+
+enum PlanStatus {
+  ACTIVE
+  GRACE
+  CANCELED
+}
+
+model User {
+  id               String   @id @default(uuid())
+  email            String   @unique
+  password         String
+  stripeCustomerId String?
+  plan             Plan     @default(FREE)
+  planStatus       PlanStatus @default(ACTIVE)
+  currentPeriodEnd DateTime?
+  createdAt        DateTime @default(now())
+}
