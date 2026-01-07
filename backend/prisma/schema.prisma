@@ -8,8 +8,10 @@ datasource db {
 }
 
 model StripeEvent {
-  id        String   @id
-  createdAt DateTime @default(now())
+  id         String   @id
+  type       String
+  processed  Boolean  @default(false)
+  createdAt  DateTime @default(now())
 }
 
 enum Plan {
@@ -24,12 +26,20 @@ enum PlanStatus {
 }
 
 model User {
-  id               String   @id @default(uuid())
-  email            String   @unique
-  password         String
-  stripeCustomerId String?
-  plan             Plan     @default(FREE)
-  planStatus       PlanStatus @default(ACTIVE)
-  currentPeriodEnd DateTime?
-  createdAt        DateTime @default(now())
+  id                    String      @id @default(uuid())
+  email                 String      @unique
+  password              String
+
+  stripeCustomerId      String?     @unique
+  stripeSubscriptionId  String?     @unique
+
+  plan                  Plan        @default(FREE)
+  planStatus            PlanStatus  @default(ACTIVE)
+  currentPeriodEnd      DateTime?
+
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  @@index([plan])
+  @@index([planStatus])
 }
